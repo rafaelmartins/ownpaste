@@ -1,0 +1,14 @@
+{% extends "base.html" -%}
+
+{% block title -%}
+{{ file_name or '(no name)' }}
+{%- endblock %}
+
+{% block pygments_css -%}
+<link type="text/css" rel="stylesheet" href="{{
+    url_for('views.pygments_css') }}" />
+{%- endblock %}
+
+{% block body -%}
+{{ paste }}
+{%- endblock %}

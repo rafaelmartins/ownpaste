@@ -1,0 +1,18 @@
+#paste td.code {
+    padding-left: 10px;
+}
+
+#paste td.linenos {
+    color: #333333;
+    background-color: #FFFFFF;
+    padding-right: 5px;
+    padding-left: 5px;
+    text-align: right;
+}
+
+#paste pre {
+    margin: 0;
+    padding: 5px 0 5px 0;
+    font-family: 'Bitstream Vera Sans Mono', monospace;
+    font-size: 13px;
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="generator" content="ownpaste" />
+        <title>{% block title %}ownpaste{% endblock %}</title>
+        <link type="text/css" rel="stylesheet" href="{{
+            url_for('static', filename='styles.css') }}" />
+
+<!-- begin pygments_css block -->
+
+{% block pygments_css %}{% endblock %}
+
+<!-- end pygments_css block -->
+
+        <style type="text/css">
+
+        </style>
+    </head>
+    <body>
+
+<!-- begin body block -->
+
+{% block body -%}
+
+<p>
+    This is an ownpaste instance.
+</p>
+
+<ul>
+    {% for paste in pagination.items %}
+    <li>
+        <a href="{{ url_for('views.show', paste_id=paste.paste_id) }}">{{
+            paste.file_name or '(no name)' }}</a> -
+        <a href="{{ url_for('views.raw', paste_id=paste.paste_id) }}">Raw</a> -
+        <a href="{{ url_for('views.download', paste_id=paste.paste_id) }}">Download</a>
+    </li>
+    {% endfor %}
+</ul>
+<div class="pagination">
+    {%- for page in pagination.iter_pages() %}
+        {% if page %}
+        {% if page != pagination.page %}
+        <a href="{{ url_for('views.page', page=page) }}">{{ page }}</a>
+        {% else %}
+        <strong>{{ page }}</strong>
+        {% endif %}
+        {% else %}
+        <span class="ellipsis">…</span>
+        {% endif %}
+    {%- endfor %}
+</div>
+
+
+{%- endblock body %}
+
+<!-- end body block -->
+
+    </body>
+</html>
