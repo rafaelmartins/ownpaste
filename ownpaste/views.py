@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template, current_app, make_response
+from flask import Blueprint, current_app, jsonify, make_response, \
+     render_template, request
 from pygments.formatters import HtmlFormatter
+from pygments.lexers import get_all_lexers
 from ownpaste.models import Paste
 
 import os
@@ -7,18 +9,42 @@ import os
 views = Blueprint('views', __name__)
 
 
+def _languages():
+    rv = {}
+    for lexer in get_all_lexers():
+        rv[lexer[1][0]] = lexer[0]
+    return rv
+
+LANGUAGES = _languages()
+del _languages
+
+
+def request_wants_json():
+    """code snippet from flask website."""
+    best = \
+        request.accept_mimetypes.best_match(['application/json', 'text/html'])
+    print request.accept_mimetypes['text/html']
+    return best == 'application/json' and \
+           request.accept_mimetypes[best] > \
+           request.accept_mimetypes['text/html']
+
+
 @views.route('/')
 @views.route('/page/<int:page>/')
-def page(page=1):
+def page(page=None):
     query = Paste.all_public()
+    if page is None and request_wants_json():
+        return jsonify(dict(languages=LANGUAGES))
     per_page = current_app.config['PER_PAGE']
     return render_template('base.html',
-                           pagination=query.paginate(page, per_page))
+                           pagination=query.paginate(page or 1, per_page))
 
 
 @views.route('/show/<paste_id>/')
 def show(paste_id):
     paste = Paste.get(paste_id)
+    if request_wants_json():
+        return jsonify(paste.to_json())
     return render_template('paste.html', file_name=paste.file_name,
                            paste=paste.file_content_highlighted)
 
@@ -35,7 +61,6 @@ def raw(paste_id):
 def download(paste_id):
     paste = Paste.get(paste_id)
     content_type = 'application/octet-stream'
-    print paste.lexer
     if len(paste.lexer.mimetypes):
         content_type = paste.lexer.mimetypes[0]
     file_name = 'untitled.txt'
@@ -51,7 +76,6 @@ def download(paste_id):
 @views.route('/pygments.css')
 def pygments_css():
     formatter = HtmlFormatter(style=current_app.config['PYGMENTS_STYLE'])
-    response =make_response(formatter.get_style_defs(('#paste', '.syntax')))
+    response = make_response(formatter.get_style_defs(('#paste', '.syntax')))
     response.headers['Content-Type'] = 'text/css'
     return response
-

@@ -4,11 +4,12 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from jinja2 import Markup
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
-from pygments.lexers import TextLexer, get_all_lexers, get_lexer_by_name, \
-     guess_lexer, guess_lexer_for_filename
+from pygments.lexers import TextLexer, get_lexer_by_name, guess_lexer, \
+     guess_lexer_for_filename
 
 import random
 import string
+import time
 
 db = SQLAlchemy()
 
@@ -59,10 +60,6 @@ class Paste(db.Model):
         self.private = private
         self.pub_date = datetime.now()
 
-        # validate language
-        if self.language not in Paste.languages():
-            self.language = None
-
         # guess language, if needed
         if self.language is None:
             if self.file_name is None:
@@ -71,11 +68,6 @@ class Paste(db.Model):
                 lexer = guess_lexer_for_filename(self.file_name,
                                                  self.file_content)
             self.language = lexer.aliases[0]
-
-    @staticmethod
-    def languages():
-        for lexer in get_all_lexers():
-            yield lexer[1][0]
 
     @staticmethod
     def get(paste_id):
@@ -105,6 +97,13 @@ class Paste(db.Model):
                                   cssclass='syntax')
         return Markup('<div id="paste">%s</div>' % \
                       highlight(self.file_content, self.lexer, formatter))
+
+    def to_json(self):
+        return dict(paste_id=self.paste_id, language=self.language,
+                    file_name=self.file_name, file_content=self.file_content,
+                    file_content_highlighted=self.file_content_highlighted,
+                    pub_date=int(time.mktime(self.pub_date.timetuple())),
+                    private=self.private, private_id=self.private_id)
 
     def __repr__(self):
         return '<%s %s: language=%s; private=%r>' % \
