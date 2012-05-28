@@ -69,18 +69,25 @@ class Paste(db.Model):
                                                  self.file_content)
             self.language = lexer.aliases[0]
 
+    @property
+    def pub_timestamp(self):
+        return int(time.mktime(self.pub_date.timetuple()))
+
     @staticmethod
     def get(paste_id):
         if isinstance(paste_id, basestring) and not paste_id.isdigit():
-            return Paste.query.filter(Paste.private_id == paste_id).first()
+            return Paste.query.filter(
+                Paste.private_id == paste_id).first_or_404()
         return Paste.query.filter(
-            db.and_(Paste.paste_id == int(paste_id),
-                    Paste.private_id == None)).first_or_404()
+            Paste.paste_id == int(paste_id)).first_or_404()
 
     @staticmethod
-    def all_public():
-        return Paste.query.filter(
-            Paste.private_id == None).order_by(Paste.paste_id.desc())
+    def all(hide_private=True):
+        if hide_private:
+            query = Paste.query.filter(Paste.private_id == None)
+        else:
+            query = Paste.query
+        return query.order_by(Paste.paste_id.desc())
 
     @property
     def lexer(self):
@@ -98,12 +105,25 @@ class Paste(db.Model):
         return Markup('<div id="paste">%s</div>' % \
                       highlight(self.file_content, self.lexer, formatter))
 
-    def to_json(self):
-        return dict(paste_id=self.paste_id, language=self.language,
-                    file_name=self.file_name, file_content=self.file_content,
-                    file_content_highlighted=self.file_content_highlighted,
-                    pub_date=int(time.mktime(self.pub_date.timetuple())),
-                    private=self.private, private_id=self.private_id)
+    def to_json(self, short=False):
+        rv = dict(paste_id=self.paste_id, language=self.language,
+                  file_name=self.file_name, pub_timestamp=self.pub_timestamp,
+                  private=self.private, private_id=self.private_id)
+        if short:
+            rv.update(file_content_preview='\n'.join(
+                self.file_content.splitlines()[:5]))
+        else:
+            rv.update(file_content=self.file_content,
+                      file_content_highlighted=self.file_content_highlighted)
+        return rv
+
+    def to_text(self, short=False):
+        rv = self.to_json(short)
+        rv['private'] = int(rv['private'])
+        for key in rv.keys():
+            if key.startswith('file_content'):
+                rv.pop(key)
+        return rv
 
     def __repr__(self):
         return '<%s %s: language=%s; private=%r>' % \
