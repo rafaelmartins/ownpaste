@@ -1,6 +1,6 @@
 from flask import Flask, _request_ctx_stack
 from flask.ext.script import Manager
-from ownpaste.models import db, Paste
+from ownpaste.models import Ip, Paste, db
 from ownpaste.utils import encrypt_password
 from ownpaste.views import views
 
@@ -16,6 +16,8 @@ def create_app(config_file=None):
                           'sqlite:////tmp/ownpaste.db')
     app.config.setdefault('USERNAME', 'ownpaste')
     app.config.setdefault('PASSWORD', encrypt_password('test'))
+    app.config.setdefault('IP_BLOCK_HITS', 10)
+    app.config.setdefault('IP_BLOCK_TIMEOUT', 60)  # in minutes
     app.config.from_envvar('OWNPASTE_SETTINGS', True)
     if config_file is not None:
         app.config.from_pyfile(config_file, True)
@@ -38,6 +40,6 @@ def create_script():
 
     @manager.shell
     def _make_context():
-        return dict(app=_request_ctx_stack.top.app, db=db, Paste=Paste)
+        return dict(app=_request_ctx_stack.top.app, db=db, Paste=Paste, Ip=Ip)
 
     return manager

@@ -20,7 +20,7 @@ class Private(object):
         chars = string.ascii_letters + string.digits
         return ''.join(random.choice(chars) for x in range(length))
 
-    def __get__(self, obj, klass):
+    def __get__(self, obj, cls):
         return obj.private_id is not None
 
     def __set__(self, obj, value):
@@ -40,6 +40,24 @@ class Private(object):
                 Paste.paste_id != obj.paste_id)).first()
             if paste is None:
                 break
+
+
+class Blocked(object):
+
+    def __get__(self, obj, cls):
+        return obj.blocked_date is not None
+
+    def __set__(self, obj, value):
+        if not value:
+            obj.blocked_date = None
+            obj.hits = 0
+            return
+
+        # we should not override existing blocked_date
+        if obj.blocked_date is not None:
+            return
+
+        obj.blocked_date = datetime.now()
 
 
 class Paste(db.Model):
@@ -129,3 +147,34 @@ class Paste(db.Model):
         return '<%s %s: language=%s; private=%r>' % \
                (self.__class__.__name__, self.file_name or 'unnamed',
                 self.language, self.private)
+
+
+class Ip(db.Model):
+
+    ip_id = db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(45), unique=True)
+    hits = db.Column(db.Integer)
+    blocked_date = db.Column(db.DateTime, nullable=True)
+    blocked = Blocked()
+
+    def __init__(self, ip):
+        self.ip = ip
+        self.hits = 0
+        self.blocked = False
+
+    @classmethod
+    def get(cls, ip):
+        obj = cls.query.filter(cls.ip == ip).first()
+        if obj is None:
+            obj = cls(ip)
+            db.session.add(obj)
+            db.session.commit()
+        return obj
+
+    def __repr__(self):
+        rv = '<%s %s: ' % (self.__class__.__name__, self.ip)
+        if self.blocked:
+            rv += 'blocked>'
+        else:
+            rv += '%i hits>' % self.hits
+        return rv

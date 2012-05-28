@@ -1,8 +1,9 @@
+from datetime import datetime, timedelta
 from flask import Blueprint, abort, current_app, g, make_response, \
      render_template, request
 from flask.views import MethodView
 from pygments.formatters import HtmlFormatter
-from ownpaste.models import Paste, db
+from ownpaste.models import Ip, Paste, db
 from ownpaste.utils import LANGUAGES, AcceptMimeType, encrypt_password, \
      jsonify, textify
 
@@ -53,6 +54,18 @@ def auth_handler(error):
     return response, 401
 
 
+@views.errorhandler(403)
+def forbidden_handler(error):
+    args = dict(status='fail', error='IP blocked!')
+    if g.accept.wants_text:
+        response = textify(**args)
+    elif g.accept.wants_json:
+        response = jsonify(args)
+    else:
+        response = make_response(args['error'])
+    return response, 403
+
+
 @views.errorhandler(404)
 def notfound_handler(error):
     args = dict(status='fail', error='Resource not found.')
@@ -65,13 +78,56 @@ def notfound_handler(error):
 
 
 def auth_required():
+
+    # get the ip object from the database, or create it if needed
+    ip = Ip.get(request.remote_addr)
+
+    # verify the ip status
+    if ip.blocked:
+
+        # evaluate the timeout
+        timeout = float(current_app.config['IP_BLOCK_TIMEOUT'])
+        timeout_delta = timedelta(minutes=timeout)
+
+        # if the ip is still banned
+        if ip.blocked_date + timeout_delta > datetime.now():
+
+            # return 'forbidden'
+            abort(403)
+
+        # ban timeout expired
+        ip.blocked = False
+        db.session.commit()
+
     auth = request.authorization
+
+    # no auth sent. ask for user/password
     if not auth:
         abort(401)
-    if auth.username != current_app.config['USERNAME']:
+
+    # if user or password are wrong
+    if auth.username != current_app.config['USERNAME'] or \
+       encrypt_password(auth.password) != current_app.config['PASSWORD']:
+
+        # we had a bad user/password, then let's increase the hit counter
+        ip.hits += 1
+        db.session.commit()
+
+        # we need to block the ip?
+        if ip.hits >= int(current_app.config['IP_BLOCK_HITS']):
+
+            # block it
+            ip.blocked = True
+            db.session.commit()
+            abort(403)
+
+        # we want authentication!!
         abort(401)
-    if encrypt_password(auth.password) != current_app.config['PASSWORD']:
-        abort(401)
+
+    # valiadtion passed! user autenticated!
+    # at this point we can drop the ip from the table :)
+    db.session.delete(ip)
+    db.session.commit()
 
 
 class PasteAPI(MethodView):
