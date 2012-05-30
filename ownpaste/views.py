@@ -43,7 +43,7 @@ def pygments_css():
 
 @views.errorhandler(401)
 def auth_handler(error):
-    args = dict(status='fail', error='Authentication required.')
+    args = dict(status='fail', error='Authentication required')
     if g.accept.wants_text:
         response = textify(**args)
     elif g.accept.wants_json:
@@ -57,7 +57,7 @@ def auth_handler(error):
 
 @views.errorhandler(403)
 def forbidden_handler(error):
-    args = dict(status='fail', error='IP blocked!')
+    args = dict(status='fail', error='IP blocked')
     if g.accept.wants_text:
         response = textify(**args)
     elif g.accept.wants_json:
@@ -69,7 +69,7 @@ def forbidden_handler(error):
 
 @views.errorhandler(404)
 def notfound_handler(error):
-    args = dict(status='fail', error='Resource not found.')
+    args = dict(status='fail', error='Resource not found')
     if g.accept.wants_text:
         return textify(**args), 404
     elif g.accept.wants_json:

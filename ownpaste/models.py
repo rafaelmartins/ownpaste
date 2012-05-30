@@ -65,14 +65,15 @@ class Paste(db.Model):
     paste_id = db.Column(db.Integer, primary_key=True)
     private_id = db.Column(db.String(40), unique=True, nullable=True)
     language = db.Column(db.String(30))
-    file_name = db.Column(db.Text, nullable=True)  # not extensively used yet
+    file_name = db.Column(db.Text, nullable=True)
     file_content = db.Column(db.Text)
     pub_date = db.Column(db.DateTime)
     private = Private()
 
     def __init__(self, file_content, file_name=None, language=None,
                  private=False):
-        self.file_content = u'\n'.join(file_content.splitlines())
+        self.file_content = u'\n'.join(file_content.decode('utf-8') \
+                                       .splitlines())
         self.file_name = file_name
         self.language = language
         self.private = private
