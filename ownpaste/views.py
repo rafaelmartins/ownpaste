@@ -52,7 +52,8 @@ def auth_handler(error):
         response = make_response(args['error'])
 
     response.headers['WWW-Authenticate'] = 'Basic realm="ownpaste"'
-    return response, 401
+    response.status_code = 401
+    return response
 
 
 @views.errorhandler(403)
@@ -64,18 +65,21 @@ def forbidden_handler(error):
         response = jsonify(args)
     else:
         response = make_response(args['error'])
-    return response, 403
+    response.status_code = 403
+    return response
 
 
 @views.errorhandler(404)
 def notfound_handler(error):
     args = dict(status='fail', error='Resource not found')
     if g.accept.wants_text:
-        return textify(**args), 404
+        response = textify(**args)
     elif g.accept.wants_json:
-        return jsonify(args), 404
+        response = jsonify(args)
     else:
-        return make_response(args['error']), 404
+        response = make_response(args['error'])
+    response.status_code = 404
+    return response
 
 
 def auth_required():
