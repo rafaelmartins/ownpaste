@@ -20,16 +20,17 @@ def before_request():
 
 @views.route('/')
 def home():
+    languages = LANGUAGES.items()[:]
+    languages.sort(key=lambda x: x[0])
     if g.accept.wants_text:
-        languages = LANGUAGES.items()[:]
-        languages.sort(key=lambda x: x[0])
         rv = ['"language", "name"', '']
         for language in languages:
             rv.append('"%s","%s"' % language)
         return textify('\n'.join(rv), version=ownpaste.__version__)
     if g.accept.wants_json:
         return jsonify(dict(version=ownpaste.__version__, languages=LANGUAGES))
-    return 'foo'
+    return render_template('base.html', version=ownpaste.__version__,
+                           languages=languages)
 
 
 @views.route('/pygments.css')
@@ -171,7 +172,7 @@ class PasteAPI(MethodView):
                                     **kwargs))
 
             # html output
-            return render_template('base.html', pagination=pagination)
+            return render_template('pastes.html', pagination=pagination)
 
         # paste rendering
         else:

@@ -1,3 +1,43 @@
+body {
+    font-family: Verdana, sans-serif;
+    font-size: normal;
+    text-align: center;
+}
+
+table td {
+    text-align: left;
+}
+
+a {
+    color: #036;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul {
+    text-align: left;
+    width: 500px;
+    margin: 0 auto;
+}
+
+table.listing {
+    margin: 20px auto;
+    border-collapse: collapse;
+}
+
+table.listing tr, table.listing td, table.listing th {
+    border: 1px solid #000;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+table.listing th {
+    background-color: #eee;
+}
+
 #paste td.code {
     padding-left: 10px;
 }
@@ -11,6 +51,7 @@
 }
 
 #paste pre {
+    text-align: left;
     margin: 0;
     padding: 5px 0 5px 0;
     font-family: 'Bitstream Vera Sans Mono', monospace;

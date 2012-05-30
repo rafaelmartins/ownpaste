@@ -23,37 +23,39 @@
 
 {% block body -%}
 
-<p>
-    This is an ownpaste instance.
-</p>
+<h1>ownpaste</h1>
 
-<ul>
-    {% for paste in pagination.items %}
-    {% set paste_id = paste.private_id or paste.paste_id %}
-    <li>
-        <a href="{{ url_for('views.paste_api', paste_id=paste_id) }}">{{
-            paste.file_name or '(no name)' }}</a> -
-        <a href="{{ url_for('views.paste_api', paste_id=paste_id,
-            action='raw') }}">Raw</a> -
-        <a href="{{ url_for('views.paste_api', paste_id=paste_id,
-            action='download') }}">Download</a>
-    </li>
-    {% endfor %}
-</ul>
-<div class="pagination">
-    {%- for page in pagination.iter_pages() %}
-        {% if page %}
-        {% if page != pagination.page %}
-        <a href="{{ url_for('views.paste_api', page=page) }}">{{ page }}</a>
-        {% else %}
-        <strong>{{ page }}</strong>
-        {% endif %}
-        {% else %}
-        <span class="ellipsis">…</span>
-        {% endif %}
+<p>This is an ownpaste instance. It is a personal pastebin.</p>
+
+<table class="listing">
+    <tr>
+        <th colspan="2">Information</th>
+    </tr>
+    <tr>
+        <td>Version:</td>
+        <td>{{ version }}</td>
+    </tr>
+    <tr>
+        <td>Pastes:</td>
+        <td><a href="{{ url_for('views.paste_api') }}">{{
+            url_for('views.paste_api') }}</a></td>
+    </tr>
+</table>
+<table class="listing">
+    <tr>
+        <th colspan="2">Languages</th>
+    </tr>
+    <tr>
+        <th>Alias</th>
+        <th>Name</th>
+    </tr>
+    {% for alias, language in languages -%}
+    <tr>
+        <td>{{ alias }}</td>
+        <td>{{ language }}</td>
+    </tr>
     {%- endfor %}
-</div>
-
+</table>
 
 {%- endblock body %}
 

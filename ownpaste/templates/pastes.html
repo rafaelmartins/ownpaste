@@ -1,0 +1,44 @@
+{% extends "base.html" -%}
+
+{% block title %}ownpaste - Pastes{% endblock %}
+
+{% block body -%}
+<h1>Pastes</h1>
+<table class="listing">
+    <tr>
+        <th>File name</th>
+        <th>Language</th>
+        <th>Date</th>
+        <th>HTML</th>
+        <th>Raw</th>
+        <th>Download</th>
+    </tr>
+    {% for paste in pagination.items %}
+    {% set paste_id = paste.private_id or paste.paste_id %}
+    <tr>
+        <td>{{ paste.file_name or '(no name)' }}</td>
+        <td>{{ paste.language }}</td>
+        <td>{{ paste.pub_date.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+        <td><a href="{{ url_for('views.paste_api', paste_id=paste_id)
+            }}">HTML</a></td>
+        <td><a href="{{ url_for('views.paste_api', paste_id=paste_id,
+            action='raw') }}">Raw</a></td>
+        <td><a href="{{ url_for('views.paste_api', paste_id=paste_id,
+            action='download') }}">Download</a></td>
+    </tr>
+    {% endfor %}
+</table>
+<div class="pagination">
+    {%- for page in pagination.iter_pages() %}
+        {% if page %}
+        {% if page != pagination.page %}
+        <a href="{{ url_for('views.paste_api', page=page) }}">{{ page }}</a>
+        {% else %}
+        <strong>{{ page }}</strong>
+        {% endif %}
+        {% else %}
+        <span class="ellipsis">…</span>
+        {% endif %}
+    {%- endfor %}
+</div>
+{%- endblock body %}
