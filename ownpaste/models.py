@@ -157,11 +157,10 @@ class Paste(db.Model):
                   file_name=self.file_name, pub_timestamp=self.pub_timestamp,
                   private=self.private, private_id=self.private_id)
         if short:
-            rv.update(file_content_preview='\n'.join(
+            rv.update(file_content_preview=u'\n'.join(
                 self.file_content.splitlines()[:5]))
         else:
-            rv.update(file_content=self.file_content,
-                      file_content_highlighted=self.file_content_highlighted)
+            rv.update(file_content=self.file_content)
         return rv
 
     def __repr__(self):
