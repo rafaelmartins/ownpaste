@@ -72,8 +72,7 @@ class Paste(db.Model):
 
     def __init__(self, file_content, file_name=None, language=None,
                  private=False):
-        self.file_content = u'\n'.join(file_content.decode('utf-8') \
-                                       .splitlines())
+        self.set_file_content(file_content)
         self.file_name = file_name
         self.language = language
         self.private = private
@@ -87,6 +86,12 @@ class Paste(db.Model):
                 lexer = guess_lexer_for_filename(self.file_name,
                                                  self.file_content)
             self.language = lexer.aliases[0]
+
+    def set_file_content(self, fc):
+        if not isinstance(fc, unicode):
+            self.file_content = u'\n'.join(fc.decode('utf-8').splitlines())
+        else:
+            self.file_content = fc
 
     @staticmethod
     def get(paste_id):

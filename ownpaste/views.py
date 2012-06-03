@@ -153,7 +153,7 @@ class PasteAPI(MethodView):
             # plain text output
             if action == 'raw':
                 response = make_response(paste.file_content)
-                response.headers['Content-type'] = 'text/plain'
+                response.headers['Content-type'] = 'text/plain; charset=utf-8'
                 return response
 
             # force download
@@ -176,10 +176,23 @@ class PasteAPI(MethodView):
     def post(self):
         auth_required()
 
-        file_name = request.args.get('file_name')
-        language = request.args.get('language')
-        private = request.args.get('private', '0') == '1'
-        file_content = request.data
+        try:
+            data = request.json
+        except:
+            abort(400)
+
+        if data is None:
+            abort(415)
+
+        file_name = data.get('file_name')
+        language = data.get('language')
+        private = data.get('private', False)
+        if not isinstance(private, bool):
+            raise(400)
+        try:
+            file_content = data['file_content']
+        except KeyError:
+            abort(400)
 
         # create object
         paste = Paste(file_content, file_name, language, private)
@@ -187,12 +200,9 @@ class PasteAPI(MethodView):
         db.session.add(paste)
         db.session.commit()
 
-        args = dict(paste_id=paste.paste_id, private=paste.private,
-                    private_id=paste.private_id)
-
         # this api method isn't intended to be used in browsers, then we will
         # return json for everybody.
-        return jsonify(args)
+        return jsonify(paste.to_json(True))
 
     def delete(self, paste_id):
         auth_required()
@@ -205,30 +215,40 @@ class PasteAPI(MethodView):
         # return json for everybody.
         return jsonify()
 
-    def put(self, paste_id):
+    def patch(self, paste_id):
         auth_required()
 
-        file_name = request.args.get('file_name')
-        language = request.args.get('language')
-        private = request.args.get('private', '0') == '1'
-        file_content = request.data
+        try:
+            data = request.json
+        except:
+            abort(400)
+
+        if data is None:
+            abort(415)
+
+        file_name = data.get('file_name')
+        language = data.get('language')
+        private = data.get('private')
+        file_content = data.get('file_content')
 
         paste = Paste.get(paste_id)
         if file_name is not None:
             paste.file_name = file_name
         if language is not None:
             paste.language = language
-        paste.private = private
-        if len(file_content):
-            paste.file_content = file_content
+        if private is not None:
+            if not isinstance(private, bool):
+                abort(400)
+            paste.private = private
+        if file_content is not None:
+            if not isinstance(file_content, basestring):
+                abort(400)
+            paste.set_file_content(file_content)
         db.session.commit()
-
-        args = dict(paste_id=paste.paste_id, private=paste.private,
-                    private_id=paste.private_id)
 
         # this api method isn't intended to be used in browsers, then we will
         # return json for everybody.
-        return jsonify(args)
+        return jsonify(paste.to_json(True))
 
 
 paste_view = PasteAPI.as_view('paste_api')
@@ -236,6 +256,6 @@ views.add_url_rule('/paste/', defaults={'paste_id': None, 'action': None},
                    view_func=paste_view, methods=['GET'])
 views.add_url_rule('/paste/', view_func=paste_view, methods=['POST'])
 views.add_url_rule('/paste/<paste_id>/', view_func=paste_view,
-                   methods=['GET', 'DELETE', 'PUT'])
+                   methods=['GET', 'DELETE', 'PATCH'])
 views.add_url_rule('/paste/<paste_id>/<action>/', view_func=paste_view,
                    methods=['GET'])
