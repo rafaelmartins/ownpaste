@@ -56,7 +56,7 @@ def auth_required():
         timeout_delta = timedelta(minutes=timeout)
 
         # if the ip is still banned
-        if ip.blocked_date + timeout_delta > datetime.now():
+        if ip.blocked_date + timeout_delta > datetime.utcnow():
 
             # return 'forbidden'
             abort(403)

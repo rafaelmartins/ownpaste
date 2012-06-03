@@ -19,6 +19,7 @@ def create_app(config_file=None):
     app.config.setdefault('PASSWORD', encrypt_password('test'))
     app.config.setdefault('IP_BLOCK_HITS', 10)
     app.config.setdefault('IP_BLOCK_TIMEOUT', 60)  # in minutes
+    app.config.setdefault('TIMEZONE', 'UTC')
     app.config.from_envvar('OWNPASTE_SETTINGS', True)
     if config_file is not None:
         app.config.from_pyfile(config_file, True)

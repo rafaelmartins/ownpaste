@@ -7,6 +7,7 @@ from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import TextLexer, get_lexer_by_name, guess_lexer, \
      guess_lexer_for_filename
+from pytz import timezone, utc
 
 import random
 import string
@@ -58,7 +59,7 @@ class Blocked(object):
         if obj.blocked_date is not None:
             return
 
-        obj.blocked_date = datetime.now()
+        obj.blocked_date = datetime.utcnow()
 
 
 class Paste(db.Model):
@@ -77,7 +78,7 @@ class Paste(db.Model):
         self.file_name = file_name
         self.language = language
         self.private = private
-        self.pub_date = datetime.now()
+        self.pub_date = datetime.utcnow()
 
         # fix file_name, we just want the basename
         self.file_name = self.file_name.split('/')[-1]
@@ -131,6 +132,15 @@ class Paste(db.Model):
     @property
     def pub_timestamp(self):
         return int(time.mktime(self.pub_date.timetuple()))
+
+    @property
+    def pub_date_localized(self):
+        date_utc = utc.localize(self.pub_date)
+        try:
+            tz = current_app.config.get('TIMEZONE', 'UTC')
+            return date_utc.astimezone(timezone(tz))
+        except:
+            return date_utc
 
     @property
     def language_name(self):
