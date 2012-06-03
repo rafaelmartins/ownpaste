@@ -88,10 +88,6 @@ class Paste(db.Model):
                                                  self.file_content)
             self.language = lexer.aliases[0]
 
-    @property
-    def pub_timestamp(self):
-        return int(time.mktime(self.pub_date.timetuple()))
-
     @staticmethod
     def get(paste_id):
         if isinstance(paste_id, basestring) and not paste_id.isdigit():
@@ -107,6 +103,14 @@ class Paste(db.Model):
         else:
             query = Paste.query
         return query.order_by(Paste.paste_id.desc())
+
+    @property
+    def pub_timestamp(self):
+        return int(time.mktime(self.pub_date.timetuple()))
+
+    @property
+    def language_name(self):
+        return self.lexer.name
 
     @property
     def lexer(self):
