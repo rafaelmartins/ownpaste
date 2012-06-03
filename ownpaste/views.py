@@ -33,7 +33,7 @@ def pygments_css():
 
 @views.errorhandler(401)
 def auth_handler(error):
-    args = dict(status='fail', error='Authentication required.')
+    args = dict(status='fail', error='Authentication required')
     if request_wants_json():
         response = jsonify(args)
     else:

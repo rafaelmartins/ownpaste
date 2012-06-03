@@ -40,7 +40,7 @@ def error_handler(error):
         raise error
     if request_wants_json():
         desc = error.get_description(request.environ)
-        desc = Markup(desc[:desc.find('.') + 1]).striptags()
+        desc = Markup(desc[:desc.find('.')]).striptags()
         error_str = '%s: %s' % (error.name, desc)
         response = jsonify(status='fail', error=error_str)
         response.status_code = error.code
