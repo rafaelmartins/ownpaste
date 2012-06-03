@@ -2,6 +2,7 @@ from flask import jsonify as flask_jsonify, request
 from jinja2 import Markup
 from hashlib import sha512
 from pygments.lexers import get_all_lexers
+from werkzeug.exceptions import HTTPException
 
 
 def _languages():
@@ -35,6 +36,8 @@ def request_wants_json():
 
 
 def error_handler(error):
+    if not isinstance(error, HTTPException):
+        raise error
     if request_wants_json():
         desc = error.get_description(request.environ)
         desc = Markup(desc[:desc.find('.') + 1]).striptags()

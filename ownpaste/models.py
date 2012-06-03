@@ -100,6 +100,8 @@ class Paste(db.Model):
                     if fnmatch(self.file_name, pattern):
                         found = True
                         break
+                else:
+                    found = True
                 if not found:
                     lexer = TextLexer
             self.language = lexer.aliases[0]
