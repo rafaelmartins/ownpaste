@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
-from flask import Blueprint, abort, current_app, g, make_response, \
+from flask import Blueprint, abort, current_app, make_response, \
      render_template, request
 from flask.views import MethodView
 from pygments.formatters import HtmlFormatter
 from ownpaste.models import Ip, Paste, db
-from ownpaste.utils import LANGUAGES, AcceptMimeType, encrypt_password, \
-     jsonify, textify
+from ownpaste.utils import LANGUAGES, encrypt_password, jsonify, \
+     request_wants_json
 
 import os
 import ownpaste
@@ -13,21 +13,11 @@ import ownpaste
 views = Blueprint('views', __name__)
 
 
-@views.before_request
-def before_request():
-    g.accept = AcceptMimeType()
-
-
 @views.route('/')
 def home():
     languages = LANGUAGES.items()[:]
     languages.sort(key=lambda x: x[0])
-    if g.accept.wants_text:
-        rv = ['"language", "name"', '']
-        for language in languages:
-            rv.append('"%s","%s"' % language)
-        return textify('\n'.join(rv), version=ownpaste.__version__)
-    if g.accept.wants_json:
+    if request_wants_json():
         return jsonify(dict(version=ownpaste.__version__, languages=LANGUAGES))
     return render_template('base.html', version=ownpaste.__version__,
                            languages=languages)
@@ -43,42 +33,13 @@ def pygments_css():
 
 @views.errorhandler(401)
 def auth_handler(error):
-    args = dict(status='fail', error='Authentication required')
-    if g.accept.wants_text:
-        response = textify(**args)
-    elif g.accept.wants_json:
+    args = dict(status='fail', error='Authentication required.')
+    if request_wants_json():
         response = jsonify(args)
     else:
         response = make_response(args['error'])
-
     response.headers['WWW-Authenticate'] = 'Basic realm="ownpaste"'
     response.status_code = 401
-    return response
-
-
-@views.errorhandler(403)
-def forbidden_handler(error):
-    args = dict(status='fail', error='IP blocked')
-    if g.accept.wants_text:
-        response = textify(**args)
-    elif g.accept.wants_json:
-        response = jsonify(args)
-    else:
-        response = make_response(args['error'])
-    response.status_code = 403
-    return response
-
-
-@views.errorhandler(404)
-def notfound_handler(error):
-    args = dict(status='fail', error='Resource not found')
-    if g.accept.wants_text:
-        response = textify(**args)
-    elif g.accept.wants_json:
-        response = jsonify(args)
-    else:
-        response = make_response(args['error'])
-    response.status_code = 404
     return response
 
 
@@ -158,19 +119,8 @@ class PasteAPI(MethodView):
             kwargs = dict(page=pagination.page, pages=pagination.pages,
                           per_page=pagination.per_page, total=pagination.total)
 
-            # text api
-            if g.accept.wants_text:
-                rv = ['"paste_id","language","file_name","pub_timestamp",'
-                      '"private","private_id"', '']
-                for paste in pagination.items:
-                    rv.append('"%s","%s","%s",%i,%i,"%s"' %
-                              (paste.paste_id, paste.language or '',
-                               paste.file_name or '', paste.pub_timestamp,
-                               paste.private, paste.private_id or ''))
-                return textify('\n'.join(rv), **kwargs)
-
             # json api
-            if g.accept.wants_json:
+            if request_wants_json():
                 return jsonify(dict(pastes=[i.to_json(True) \
                                             for i in pagination.items],
                                     **kwargs))
@@ -190,12 +140,8 @@ class PasteAPI(MethodView):
             # guess output by browser's accept header
             if action is None:
 
-                # text api
-                if g.accept.wants_text:
-                    return textify(**paste.to_text())
-
                 # json api
-                if g.accept.wants_json:
+                if request_wants_json():
                     return jsonify(paste.to_json())
 
                 # html output
@@ -206,7 +152,9 @@ class PasteAPI(MethodView):
 
             # plain text output
             if action == 'raw':
-                return textify(paste.file_content, show_status=False)
+                response = make_response(paste.file_content)
+                response.headers['Content-type'] = 'text/plain'
+                return response
 
             # force download
             if action == 'download':
@@ -242,13 +190,8 @@ class PasteAPI(MethodView):
         args = dict(paste_id=paste.paste_id, private=paste.private,
                     private_id=paste.private_id)
 
-        # text response
-        if g.accept.wants_text:
-            args.update(private=int(paste.private))
-            return textify(**args)
-
         # this api method isn't intended to be used in browsers, then we will
-        # return json for everybody who doesn't prefers text.
+        # return json for everybody.
         return jsonify(args)
 
     def delete(self, paste_id):
@@ -258,12 +201,8 @@ class PasteAPI(MethodView):
         db.session.delete(paste)
         db.session.commit()
 
-        # text response
-        if g.accept.wants_text:
-            return textify()
-
         # this api method isn't intended to be used in browsers, then we will
-        # return json for everybody who doesn't prefers text.
+        # return json for everybody.
         return jsonify()
 
     def put(self, paste_id):
@@ -287,13 +226,8 @@ class PasteAPI(MethodView):
         args = dict(paste_id=paste.paste_id, private=paste.private,
                     private_id=paste.private_id)
 
-        # text response
-        if g.accept.wants_text:
-            args.update(private=int(paste.private))
-            return textify(**args)
-
         # this api method isn't intended to be used in browsers, then we will
-        # return json for everybody who doesn't prefers text.
+        # return json for everybody.
         return jsonify(args)
 
 

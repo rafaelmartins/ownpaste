@@ -1,7 +1,8 @@
 from flask import Flask, _request_ctx_stack
 from flask.ext.script import Manager
+from werkzeug.exceptions import default_exceptions
 from ownpaste.models import Ip, Paste, db
-from ownpaste.utils import encrypt_password
+from ownpaste.utils import encrypt_password, error_handler
 from ownpaste.views import views
 
 __version__ = '0.1pre'
@@ -22,6 +23,13 @@ def create_app(config_file=None):
     if config_file is not None:
         app.config.from_pyfile(config_file, True)
     db.init_app(app)
+
+    # register default error handler
+    # based on: http://flask.pocoo.org/snippets/15/
+    for _exc in default_exceptions:
+        app.error_handlers[_exc] = error_handler
+    del _exc
+
     app.register_blueprint(views)
 
     @app.before_first_request

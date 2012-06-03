@@ -140,14 +140,6 @@ class Paste(db.Model):
                       file_content_highlighted=self.file_content_highlighted)
         return rv
 
-    def to_text(self, short=False):
-        rv = self.to_json(short)
-        rv['private'] = int(rv['private'])
-        for key in rv.keys():
-            if key.startswith('file_content'):
-                rv.pop(key)
-        return rv
-
     def __repr__(self):
         return '<%s %s: language=%s; private=%r>' % \
                (self.__class__.__name__, self.file_name or 'unnamed',
