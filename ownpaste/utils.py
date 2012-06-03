@@ -35,7 +35,6 @@ def request_wants_json():
 
 
 def error_handler(error):
-    print request.accept_mimetypes
     if request_wants_json():
         desc = error.get_description(request.environ)
         desc = Markup(desc[:desc.find('.') + 1]).striptags()
