@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import current_app
 from flask.ext.sqlalchemy import SQLAlchemy
 from jinja2 import Markup
+from fnmatch import fnmatch
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import TextLexer, get_lexer_by_name, guess_lexer, \
@@ -78,6 +79,10 @@ class Paste(db.Model):
         self.private = private
         self.pub_date = datetime.now()
 
+        # fix file_name, we just want the basename
+        self.file_name = self.file_name.split('/')[-1]
+        self.file_name = self.file_name.split('\\')[-1]
+
         # guess language, if needed
         if self.language is None:
             if self.file_name is None:
@@ -88,6 +93,15 @@ class Paste(db.Model):
                                                      self.file_content)
                 except:
                     lexer = guess_lexer(self.file_content)
+
+                # verify if lexer is ok for filename
+                found = False
+                for pattern in lexer.filenames:
+                    if fnmatch(self.file_name, pattern):
+                        found = True
+                        break
+                if not found:
+                    lexer = TextLexer
             self.language = lexer.aliases[0]
 
     def set_file_content(self, fc):
