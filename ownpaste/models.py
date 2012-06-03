@@ -83,8 +83,11 @@ class Paste(db.Model):
             if self.file_name is None:
                 lexer = guess_lexer(self.file_content)
             else:
-                lexer = guess_lexer_for_filename(self.file_name,
-                                                 self.file_content)
+                try:
+                    lexer = guess_lexer_for_filename(self.file_name,
+                                                     self.file_content)
+                except:
+                    lexer = guess_lexer(self.file_content)
             self.language = lexer.aliases[0]
 
     def set_file_content(self, fc):
