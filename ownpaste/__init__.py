@@ -1,3 +1,7 @@
+# ignore useless warnings about modules already imported.
+import warnings
+warnings.filterwarnings('ignore', r'module.*already imported', UserWarning)
+
 from flask import Flask, _request_ctx_stack
 from flask.ext.script import Manager
 from werkzeug.exceptions import default_exceptions
