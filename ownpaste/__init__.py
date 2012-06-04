@@ -5,7 +5,8 @@ from ownpaste.models import Ip, Paste, db
 from ownpaste.utils import encrypt_password, error_handler
 from ownpaste.views import views
 
-__version__ = '0.1pre'
+version = __version__ = '0.1pre'
+api_version = '1'
 
 
 def create_app(config_file=None):
