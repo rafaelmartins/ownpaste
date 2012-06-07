@@ -57,3 +57,12 @@ def create_script():
         return dict(app=_request_ctx_stack.top.app, db=db, Paste=Paste, Ip=Ip)
 
     return manager
+
+
+def main():
+    import sys
+    try:
+        create_script().run()
+    except Exception, e:
+        print >> sys.stderr, '%s: %s' % (e.__class__.__name__, e)
+        return -1
