@@ -27,7 +27,7 @@ def create_app(config_file=None):
     app.config.setdefault('TIMEZONE', 'UTC')
     app.config.from_envvar('OWNPASTE_SETTINGS', True)
     if config_file is not None:
-        app.config.from_pyfile(config_file, True)
+        app.config.from_pyfile(config_file)
     db.init_app(app)
 
     # register default error handler
