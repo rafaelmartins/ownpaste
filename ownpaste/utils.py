@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from flask import jsonify as flask_jsonify, request
 from jinja2 import Markup
 from hashlib import sha512
@@ -6,9 +7,12 @@ from werkzeug.exceptions import HTTPException
 
 
 def _languages():
-    rv = {}
-    for lexer in get_all_lexers():
-        rv[lexer[1][0]] = lexer[0]
+    rv = OrderedDict()
+    lexers = list(get_all_lexers())
+    lexers.sort(key=lambda x: x[0])
+    for lexer in lexers:
+        for alias in lexer[1]:
+            rv[alias] = lexer[0]
     return rv
 
 LANGUAGES = _languages()

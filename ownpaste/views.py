@@ -15,15 +15,13 @@ views = Blueprint('views', __name__)
 
 @views.route('/')
 def home():
-    languages = LANGUAGES.items()[:]
-    languages.sort(key=lambda x: x[0])
     if request_wants_json():
         return jsonify(dict(version=ownpaste.version,
                             api_version=ownpaste.api_version,
                             languages=LANGUAGES))
     return render_template('base.html', version=ownpaste.version,
                            api_version=ownpaste.api_version,
-                           languages=languages)
+                           languages=LANGUAGES.iteritems())
 
 
 @views.route('/pygments.css')
