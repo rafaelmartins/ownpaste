@@ -1,4 +1,154 @@
 Server setup
 ============
 
-TODO.
+This section will guide you through the alternatives for setting up and
+configuring ownpaste in your operating system. ownpaste is currently tested
+on Linux_, but should works in other operating systems.
+
+ownpaste works on Python 2.7.
+
+ownpaste is available at the *Python Package Index* (PyPI_):
+
+http://pypi.python.org/pypi/ownpaste
+
+.. _Linux: http://kernel.org/
+.. _PyPI: http://pypi.python.org/
+
+
+Installing ownpaste
+-------------------
+
+Manually
+~~~~~~~~
+
+Download the latest tarball from PyPI_, extract it and run::
+
+   # python setup.py install
+
+
+Using ``pip``/``easy_install``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To install blohg using ``pip``, type::
+
+    # pip install ownpaste
+
+Or using ``easy_install``, type::
+
+    # easy_install ownpaste
+
+
+Gentoo Linux
+~~~~~~~~~~~~
+
+There's a Gentoo_ ebuild available in the main tree. Install it using::
+
+    # emerge -av www-apps/ownpaste
+
+.. _Gentoo: http://www.gentoo.org/
+
+
+Configuring ownpaste
+--------------------
+
+These are the steps needed to configure ownpaste properly.
+
+
+Generate password hash
+~~~~~~~~~~~~~~~~~~~~~~
+
+ownpaste is a private pastebin application, then you need an username and a
+password to be able to add pastes. Password is saved in the configuration file,
+but for security reasons we want it hashed.
+
+ownpaste provides an ``ownpaste`` script, that have some cool commands to help
+you when deploying ownpaste.
+
+The following command will ask you for the desired password, and output the hash
+to be used in the configuration file::
+
+    $ ownpaste generatepw
+
+
+Configuration parameters
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+These are the configuration parameters available for ownpaste.
+
+Please read the descriptions carefully and create your configuration file. The
+configuration file is an usual python file, with the following variables:
+
++-------------------------+------------------------------+----------------------------------+
+| Key                     | Default                      | Description                      |
++=========================+==============================+==================================+
+| PYGMENTS_STYLE          | 'friendly'                   | Pygments style. See Pygments     |
+|                         |                              | documentation for reference      |
++-------------------------+------------------------------+----------------------------------+
+| PYGMENTS_LINENOS        | True                         | Enable Pygments line numbering   |
++-------------------------+------------------------------+----------------------------------+
+| PER_PAGE                | 20                           | Number of pastes per page, for   |
+|                         |                              | pagination                       |
++-------------------------+------------------------------+----------------------------------+
+| SQLALCHEMY_DATABASE_URI | 'sqlite:////tmp/ownpaste.db' | SQL-Alchemy database string      |
++-------------------------+------------------------------+----------------------------------+
+| USERNAME                | 'ownpaste'                   | Username                         |
++-------------------------+------------------------------+----------------------------------+
+| PASSWORD                | hash of 'test'               | Password hash                    |
++-------------------------+------------------------------+----------------------------------+
+| IP_BLOCK_HITS           | 10                           | Number of login attempts before  |
+|                         |                              | block the user IP                |
++-------------------------+------------------------------+----------------------------------+
+| IP_BLOCK_TIMEOUT        | 60                           | Timeout to remove IPs from block |
+|                         |                              | blacklist                        |
++-------------------------+------------------------------+----------------------------------+
+| TIMEZONE                | 'UTC'                        | Timezone                         |
++-------------------------+------------------------------+----------------------------------+
+
+Please don't use the default 'test' password, it is *VERY* unsecure.
+
+Save your configuration file somewhere.
+
+
+Initializing the ownpaste database
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You'll need to initialize the database with the needed tables. You can use any
+database system supported by SQL-Alchemy.
+
+The ``ownpaste`` script provides a command to initialize the database::
+
+    $ ownpaste initdb --config-file=/path/to/config-file.cfg
+
+
+Running ownpaste
+~~~~~~~~~~~~~~~~
+
+You can run ownpaste using the ``ownpaste`` script, for tests. The built-in
+server can't handle any request load, then don't use it in production.
+
+::
+
+    $ ownpaste runserver --config-file=/path/to/config-file.cfg
+
+You can also setup the configuration file path using the environment
+variable ``OWNPASTE_SETTINGS``. This variable should contains a string
+with the path of the configuration file.
+
+
+Deploying ownpaste
+~~~~~~~~~~~~~~~~~~
+
+A simple wsgi file for ownpaste looks like this:
+
+.. sourcecode:: python
+
+   from ownpaste import create_app
+
+   application = create_app('/path/to/config-file.cfg')
+
+
+ownpaste is an usual Flask application, take a look at flask deployment
+documentation for instructions:
+
+http://flask.pocoo.org/docs/deploying/
+
