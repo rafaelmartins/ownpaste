@@ -24,8 +24,8 @@ Some methods will requires basic auth authentication. Use the credetials
 created during the server setup phase.
 
 
-Base JSON object
-----------------
+Base JSON response object
+-------------------------
 
 All the methods, when returning JSON data, will have a common base format:
 
