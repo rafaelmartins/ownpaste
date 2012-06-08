@@ -1,2 +1,6 @@
 \.pyc$
 \.wpu$
+
+^ownpaste.egg-info/
+^dist/
+^build/

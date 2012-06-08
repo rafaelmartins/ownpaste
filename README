@@ -1,0 +1,9 @@
+ownpaste
+========
+
+ownpaste is a Pastebin web application, to be used as a personal pastebin.
+
+ownpaste provides a RESTful API, that can be used by clients to interact
+with it. There's no web interface to add content to it, just the API.
+
+Read the documentation for details.

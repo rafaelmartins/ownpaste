@@ -3,7 +3,7 @@ from flask import Blueprint, abort, current_app, make_response, \
      render_template, request
 from flask.views import MethodView
 from pygments.formatters import HtmlFormatter
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
 from ownpaste.models import Ip, Paste, db
 from ownpaste.utils import LANGUAGES, jsonify, request_wants_json
 
