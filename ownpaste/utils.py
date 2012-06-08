@@ -1,7 +1,6 @@
 from collections import OrderedDict
 from flask import jsonify as flask_jsonify, request
 from jinja2 import Markup
-from hashlib import sha512
 from pygments.lexers import get_all_lexers
 from werkzeug.exceptions import HTTPException
 
@@ -24,10 +23,6 @@ def jsonify(*args, **kwargs):
     if 'status' not in rv:
         rv['status'] = 'ok'
     return flask_jsonify(rv)
-
-
-def encrypt_password(password):
-    return sha512(password).hexdigest()
 
 
 def request_wants_json():

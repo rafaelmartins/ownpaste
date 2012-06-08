@@ -3,9 +3,9 @@ from flask import Blueprint, abort, current_app, make_response, \
      render_template, request
 from flask.views import MethodView
 from pygments.formatters import HtmlFormatter
+from werkzeug.security import check_password_hash, generate_password_hash
 from ownpaste.models import Ip, Paste, db
-from ownpaste.utils import LANGUAGES, encrypt_password, jsonify, \
-     request_wants_json
+from ownpaste.utils import LANGUAGES, jsonify, request_wants_json
 
 import os
 import ownpaste
@@ -74,7 +74,7 @@ def auth_required():
 
     # if user or password are wrong
     if auth.username != current_app.config['USERNAME'] or \
-       encrypt_password(auth.password) != current_app.config['PASSWORD']:
+       not check_password_hash(current_app.config['PASSWORD'], auth.password):
 
         # we had a bad user/password, then let's increase the hit counter
         ip.hits += 1

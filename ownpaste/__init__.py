@@ -5,8 +5,10 @@ warnings.filterwarnings('ignore', r'module.*already imported', UserWarning)
 from flask import Flask, _request_ctx_stack
 from flask.ext.script import Manager
 from werkzeug.exceptions import default_exceptions
+from werkzeug.security import check_password_hash, generate_password_hash
 from ownpaste.models import Ip, Paste, db
-from ownpaste.utils import encrypt_password, error_handler
+from ownpaste.script import GeneratePw, InitDb
+from ownpaste.utils import error_handler
 from ownpaste.views import views
 
 version = __version__ = '0.1pre'
@@ -21,7 +23,7 @@ def create_app(config_file=None):
     app.config.setdefault('SQLALCHEMY_DATABASE_URI',
                           'sqlite:////tmp/ownpaste.db')
     app.config.setdefault('USERNAME', 'ownpaste')
-    app.config.setdefault('PASSWORD', encrypt_password('test'))
+    app.config.setdefault('PASSWORD', generate_password_hash('test'))
     app.config.setdefault('IP_BLOCK_HITS', 10)
     app.config.setdefault('IP_BLOCK_TIMEOUT', 60)  # in minutes
     app.config.setdefault('TIMEZONE', 'UTC')
@@ -41,7 +43,7 @@ def create_app(config_file=None):
     @app.before_first_request
     def before_first_request():
         if (not app.debug) and \
-           (app.config['PASSWORD'] == encrypt_password('test')):
+           check_password_hash(app.config['PASSWORD'], 'test'):
             raise RuntimeError('You should provide a password!!')
 
     return app
@@ -56,6 +58,8 @@ def create_script():
     def _make_context():
         return dict(app=_request_ctx_stack.top.app, db=db, Paste=Paste, Ip=Ip)
 
+    manager.add_command('generatepw', GeneratePw())
+    manager.add_command('initdb', InitDb())
     return manager
 
 
