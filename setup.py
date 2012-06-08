@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from setuptools import find_packages, setup
-import ownpaste
 import os
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -10,7 +9,7 @@ with open(os.path.join(current_dir, 'README')) as fp:
 
 setup(
     name='ownpaste',
-    version=ownpaste.__version__,
+    version='0.1pre',
     license='BSD',
     description='Private pastebin (server-side implementation)',
     long_description=long_description,
@@ -18,6 +17,8 @@ setup(
     author_email='rafael@rafaelmartins.eng.br',
     url='https://hg.rafaelmartins.eng.br/ownpaste/',
     packages=find_packages(),
+    include_package_data=True,
+    zip_safe=False,
     install_requires=[
         'Flask >= 0.8',
         'Flask-Script >= 0.3.3',
