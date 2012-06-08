@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+"""
+    ownpaste.views
+    ~~~~~~~~~~~~~~~
+
+    Module with Flask views.
+
+    :copyright: (c) 2012 by Rafael Goncalves Martins
+    :license: BSD, see LICENSE for more details.
+"""
+
 from datetime import datetime, timedelta
 from flask import Blueprint, abort, current_app, make_response, \
      render_template, request

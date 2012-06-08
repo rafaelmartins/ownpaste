@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+"""
+    ownpaste
+    ~~~~~~~~
+
+    Main package.
+
+    :copyright: (c) 2012 by Rafael Goncalves Martins
+    :license: BSD, see LICENSE for more details.
+"""
+
 # ignore useless warnings about modules already imported.
 import warnings
 warnings.filterwarnings('ignore', r'module.*already imported', UserWarning)

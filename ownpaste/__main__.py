@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+"""
+    ownpaste.__main__
+    ~~~~~~~~~~~~~~~~~
+
+    Main script endpoint.
+
+    :copyright: (c) 2012 by Rafael Goncalves Martins
+    :license: BSD, see LICENSE for more details.
+"""
+
 import os
 import sys
 

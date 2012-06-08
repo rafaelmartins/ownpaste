@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+"""
+    ownpaste.models
+    ~~~~~~~~~~~~~~~
+
+    Module with SQL-Alchemy models.
+
+    :copyright: (c) 2012 by Rafael Goncalves Martins
+    :license: BSD, see LICENSE for more details.
+"""
+
 from datetime import datetime
 from flask import current_app
 from flask.ext.sqlalchemy import SQLAlchemy

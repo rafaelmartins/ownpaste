@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+"""
+    ownpaste.utils
+    ~~~~~~~~~~~~~~
+
+    Module with helpers and utilities.
+
+    :copyright: (c) 2012 by Rafael Goncalves Martins
+    :license: BSD, see LICENSE for more details.
+"""
+
 from collections import OrderedDict
 from flask import jsonify as flask_jsonify, request
 from jinja2 import Markup

@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+"""
+    ownpaste.script
+    ~~~~~~~~~~~~~~~
+
+    Module with Flask-Script commands.
+
+    :copyright: (c) 2012 by Rafael Goncalves Martins
+    :license: BSD, see LICENSE for more details.
+"""
+
 from flask.ext.script import Command, prompt_pass
 from werkzeug.security import generate_password_hash
 from ownpaste.models import db
