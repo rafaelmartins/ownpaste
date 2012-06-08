@@ -13,15 +13,16 @@ Our current API version is ``1``.
 This section of the documentation will explain the API endpoints and methods.
 
 The tables with returned/received objects are related to the JSON API and
-usually (but not always) the variables that can be used by Jinja templates.
+usually (but not always) to the variables that can be used by Jinja templates.
 
 The tables with query string parameters are related to any API format.
 
 All the methods and endpoints will be able to return a JSON object, some of
-them can return HTML, and some of them can receive a JSON object.
+them can return HTML, and some of them can receive a JSON object in the body
+of the request.
 
-Some methods will requires basic auth authentication. Use the credetials
-created during the server setup phase.
+Some methods will require basic authentication. Use the credetials created
+during the server setup phase.
 
 
 Base JSON response object
