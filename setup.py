@@ -31,7 +31,7 @@ setup(
     install_requires=[
         'Flask >= 0.8',
         'Flask-Script >= 0.3.3',
-        'Flask-SQLAlchemy >= 0.16',
+        'Flask-SQLAlchemy >= 0.15',
         'Jinja2 >= 2.6',
         'Werkzeug >= 0.8',
         'Pygments',

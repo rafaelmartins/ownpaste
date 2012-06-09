@@ -1,4 +1,8 @@
 include LICENSE
 include MANIFEST.in
+include requirements.txt
 recursive-include ownpaste/static *
 recursive-include ownpaste/templates *
+recursive-include docs *
+prune docs/_build
+include docs/_build/.keep
