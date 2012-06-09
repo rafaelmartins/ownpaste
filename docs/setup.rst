@@ -59,7 +59,7 @@ Generate password hash
 
 ownpaste is a private pastebin application, then you need an username and a
 password to be able to add pastes. Password is saved in the configuration file,
-but for security reasons we want it hashed.
+but for security reasons you will want it hashed.
 
 ownpaste provides an ``ownpaste`` script, that have some cool commands to help
 you when deploying ownpaste.
@@ -124,7 +124,7 @@ Running ownpaste
 ~~~~~~~~~~~~~~~~
 
 You can run ownpaste using the ``ownpaste`` script, for tests. The built-in
-server can't handle any request load, then don't use it in production.
+server can't handle a big request load, then please don't use it in production.
 
 ::
 
@@ -151,4 +151,6 @@ ownpaste is an usual Flask application, take a look at flask deployment
 documentation for instructions:
 
 http://flask.pocoo.org/docs/deploying/
+
+Also, make sure that you deploy ownpaste using HTTPS, to improve the security.
 
