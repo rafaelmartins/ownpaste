@@ -48,6 +48,24 @@ There's a Gentoo_ ebuild available in the main tree. Install it using::
 .. _Gentoo: http://www.gentoo.org/
 
 
+Running ownpaste from the Mercurial repository
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can also run ownpaste from the Mercurial repository. Just clone it and make
+sure that it is added to your Python path::
+
+    $ hg clone https://hg.rafaelmartins.eng.br/ownpaste/
+    $ cd ownpaste/
+
+The ``ownpaste`` script does not exists in the repository, but you can run it
+using the following command from the repository root::
+
+    $ python ownpaste/
+
+``ownpaste/`` is the directory of the main Python package, with the ownpaste
+implementation.
+
+
 Configuring ownpaste
 --------------------
 
