@@ -24,7 +24,7 @@ setup(
     long_description=long_description,
     author='Rafael G. Martins',
     author_email='rafael@rafaelmartins.eng.br',
-    url='https://hg.rafaelmartins.eng.br/ownpaste/',
+    url='http://ownpaste.rtfd.org/',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,

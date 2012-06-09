@@ -5,7 +5,7 @@ ownpaste is a pastebin web application, designed to be used as a
 personal/private pastebin.
 
 This project is motivated by the difficulty of maintain a public pastebin
-service nowadays without time expiration and heavy spam filters. This is
+service nowadays, without time expiration and heavy spam filters. This is
 the reason why services like http://paste.pocoo.org/ are shutting down.
 
 A simple private pastebin application, that you can run by yourself, that
@@ -20,4 +20,6 @@ Pygments_ syntax highlighter and a few other well-known Python_ libraries.
 .. _Pygments: http://pygments.org/
 .. _Python: http://www.python.org/
 
-Read the documentation for details.
+Please read the documentation for details:
+
+http://ownpaste.rtfd.org/
