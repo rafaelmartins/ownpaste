@@ -22,8 +22,10 @@ from ownpaste.script import GeneratePw, InitDb
 from ownpaste.utils import error_handler
 from ownpaste.views import views
 
-version = __version__ = '0.1pre'
-api_version = '1'
+import ownpaste.version
+
+version = ownpaste.version.version
+api_version = ownpaste.version.api_version
 
 
 def create_app(config_file=None):

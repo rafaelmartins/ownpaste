@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
     ownpaste.views
-    ~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~
 
     Module with Flask views.
 

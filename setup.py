@@ -2,14 +2,23 @@
 
 from setuptools import find_packages, setup
 import os
+import sys
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(current_dir, 'README')) as fp:
+cwd = os.path.dirname(os.path.abspath(__file__))
+
+# doing things the wrong way...
+# we need the module ownpaste.version but we can't import the full package
+# first time because the dependencies probably aren't solved yet.
+sys.path.append(os.path.join(cwd, 'ownpaste'))
+from version import version as __version__
+
+long_description = ''
+with open(os.path.join(cwd, 'README')) as fp:
     long_description = fp.read()
 
 setup(
     name='ownpaste',
-    version='0.1pre',
+    version=__version__,
     license='BSD',
     description='Private pastebin (server-side implementation)',
     long_description=long_description,
