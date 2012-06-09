@@ -24,7 +24,7 @@ from ownpaste.views import views
 
 import ownpaste.version
 
-version = ownpaste.version.version
+__version__ = ownpaste.version.version
 api_version = ownpaste.version.api_version
 
 

@@ -27,10 +27,10 @@ views = Blueprint('views', __name__)
 @views.route('/')
 def home():
     if request_wants_json():
-        return jsonify(dict(version=ownpaste.version,
+        return jsonify(dict(version=ownpaste.__version__,
                             api_version=ownpaste.api_version,
                             languages=LANGUAGES))
-    return render_template('base.html', version=ownpaste.version,
+    return render_template('base.html', version=ownpaste.__version__,
                            api_version=ownpaste.api_version,
                            languages=LANGUAGES.iteritems())
 
