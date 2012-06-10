@@ -34,6 +34,7 @@ setup(
         'Flask-SQLAlchemy >= 0.15',
         'Jinja2 >= 2.6',
         'Werkzeug >= 0.8',
+        'sqlalchemy-migrate >= 0.7.2',
         'Pygments',
         'pytz',
     ],
