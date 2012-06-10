@@ -1,4 +1,4 @@
-\.pyc$
+\.py[co]$
 \.wpu$
 
 ^ownpaste.egg-info/

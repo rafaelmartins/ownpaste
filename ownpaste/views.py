@@ -9,13 +9,12 @@
     :license: BSD, see LICENSE for more details.
 """
 
-from datetime import datetime, timedelta
 from flask import Blueprint, abort, current_app, make_response, \
      render_template, request
 from flask.views import MethodView
 from pygments.formatters import HtmlFormatter
-from werkzeug.security import check_password_hash
-from ownpaste.models import Ip, Paste, db
+from ownpaste.auth import HTTPDigestAuth
+from ownpaste.models import Paste, db
 from ownpaste.utils import LANGUAGES, jsonify, request_wants_json
 
 import os
@@ -43,72 +42,11 @@ def pygments_css():
     return response
 
 
-@views.errorhandler(401)
-def auth_handler(error):
-    args = dict(status='fail', error='Authentication required')
-    if request_wants_json():
-        response = jsonify(args)
-    else:
-        response = make_response(args['error'])
-    response.headers['WWW-Authenticate'] = 'Basic realm="ownpaste"'
-    response.status_code = 401
-    return response
-
-
-def auth_required():
-
-    # get the ip object from the database, or create it if needed
-    ip = Ip.get(request.remote_addr)
-
-    # verify the ip status
-    if ip.blocked:
-
-        # evaluate the timeout
-        timeout = float(current_app.config['IP_BLOCK_TIMEOUT'])
-        timeout_delta = timedelta(minutes=timeout)
-
-        # if the ip is still banned
-        if ip.blocked_date + timeout_delta > datetime.utcnow():
-
-            # return 'forbidden'
-            abort(403)
-
-        # ban timeout expired
-        ip.blocked = False
-        db.session.commit()
-
-    auth = request.authorization
-
-    # no auth sent. ask for user/password
-    if not auth:
-        abort(401)
-
-    # if user or password are wrong
-    if auth.username != current_app.config['USERNAME'] or \
-       not check_password_hash(current_app.config['PASSWORD'], auth.password):
-
-        # we had a bad user/password, then let's increase the hit counter
-        ip.hits += 1
-        db.session.commit()
-
-        # we need to block the ip?
-        if ip.hits >= int(current_app.config['IP_BLOCK_HITS']):
-
-            # block it
-            ip.blocked = True
-            db.session.commit()
-            abort(403)
-
-        # we want authentication!!
-        abort(401)
-
-    # valiadtion passed! user autenticated!
-    # at this point we can drop the ip from the table :)
-    db.session.delete(ip)
-    db.session.commit()
-
-
 class PasteAPI(MethodView):
+
+    def __init__(self, *args, **kwargs):
+        self.auth = HTTPDigestAuth()
+        MethodView.__init__(self, *args, **kwargs)
 
     def get(self, paste_id=None, action=None):
 
@@ -120,7 +58,7 @@ class PasteAPI(MethodView):
 
             # private mode
             if request.args.get('private', '0') == '1':
-                auth_required()
+                self.auth.required()
                 query = Paste.all(hide_private=False)
 
             # normal mode
@@ -147,7 +85,7 @@ class PasteAPI(MethodView):
 
             # if private ask for authentication
             if paste.private and paste_id.isdigit():
-                auth_required()
+                self.auth.required()
 
             # guess output by browser's accept header
             if action is None:
@@ -186,7 +124,7 @@ class PasteAPI(MethodView):
             abort(404)
 
     def post(self):
-        auth_required()
+        self.auth.required()
 
         try:
             data = request.json
@@ -217,7 +155,7 @@ class PasteAPI(MethodView):
         return jsonify(paste.to_json(True))
 
     def delete(self, paste_id):
-        auth_required()
+        self.auth.required()
 
         paste = paste = Paste.get(paste_id)
         db.session.delete(paste)
@@ -228,7 +166,7 @@ class PasteAPI(MethodView):
         return jsonify()
 
     def patch(self, paste_id):
-        auth_required()
+        self.auth.required()
 
         try:
             data = request.json

@@ -25,4 +25,3 @@ def downgrade(migrate_engine):
     pre_meta.bind = migrate_engine
     post_meta.bind = migrate_engine
     post_meta.tables['ip'].columns['nonce'].drop()
-
