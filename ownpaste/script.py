@@ -13,6 +13,7 @@ from flask import current_app
 from flask.ext.script import Command, Option, prompt_pass
 from migrate.versioning import api as migrate_api
 from werkzeug.security import generate_password_hash
+from ownpaste.auth import HTTPDigestAuth
 from ownpaste.migrations import __file__ as migrations_init
 
 import logging
@@ -24,6 +25,7 @@ class GeneratePw(Command):
     '''Generates a safe password for your configuration file.'''
 
     def run(self):
+        auth = HTTPDigestAuth()
         p1 = prompt_pass('Password')
         p2 = prompt_pass('Retype password')
         if p1 != p2:
@@ -31,7 +33,7 @@ class GeneratePw(Command):
             return
         print
         print 'Add this to your configuration file:'
-        print 'PASSWORD = \'%s\'' % generate_password_hash(p1)
+        print 'PASSWORD = \'%s\'' % auth.a1(p1)
 
 
 class SingleLevelFilter(logging.Filter):
