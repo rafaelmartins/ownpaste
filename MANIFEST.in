@@ -1,6 +1,8 @@
 include LICENSE
 include MANIFEST.in
 include requirements.txt
+include ownpaste/migrations/migrate.cfg
+include ownpaste/migrations/README
 recursive-include ownpaste/static *
 recursive-include ownpaste/templates *
 recursive-include docs *
