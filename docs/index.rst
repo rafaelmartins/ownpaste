@@ -19,4 +19,5 @@ User's Guide
 
    setup
    api
+   upgrade
 

@@ -12,6 +12,7 @@
 from datetime import datetime, timedelta
 from flask import abort, current_app, make_response, request
 from hashlib import md5
+from werkzeug.exceptions import default_exceptions
 from ownpaste.models import Ip, db
 from ownpaste.utils import jsonify, request_wants_json
 
@@ -39,23 +40,21 @@ class HTTPDigestAuth(object):
                          cnonce or request.authorization.cnonce,
                          qop or request.authorization.qop, a2 or self.a2())
 
-    def challenge(self, error=None):
+    def challenge(self, error):
         ip = Ip.get(request.remote_addr)
-        args = dict(status='fail', error='Authentication required')
         if request_wants_json():
-            response = jsonify(args)
+            response = jsonify(dict(status='fail', error='Authentication required'))
         else:
-            response = make_response(args['error'])
+            response = make_response(error.get_body(request.environ))
 
         # create nonce. the client should return the request with the
         # authentication data and the same nonce
-        nonce = os.urandom(8).encode('hex')
-        ip.nonce = nonce
+        ip.nonce = os.urandom(8).encode('hex')
         db.session.commit()
 
         # set digest response
         response.www_authenticate.set_digest(realm=current_app.config['REALM'],
-                                             nonce=nonce, qop=['auth'],
+                                             nonce=ip.nonce, qop=['auth'],
                                              algorithm='MD5')
         response.status_code = 401
         return response
