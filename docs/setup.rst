@@ -135,7 +135,8 @@ database system supported by SQL-Alchemy.
 
 The ``ownpaste`` script provides a command to initialize the database::
 
-    $ ownpaste initdb --config-file=/path/to/config-file.cfg
+    $ ownpaste db_version_control --config-file=/path/to/config-file.cfg
+    $ ownpaste db_upgrade --config-file=/path/to/config-file.cfg
 
 
 Running ownpaste

@@ -21,7 +21,7 @@ All the methods and endpoints will be able to return a JSON object, some of
 them can return HTML, and some of them can receive a JSON object in the body
 of the request.
 
-Some methods will require basic authentication. Use the credetials created
+Some methods will require digest authentication. Use the credetials created
 during the server setup phase.
 
 
