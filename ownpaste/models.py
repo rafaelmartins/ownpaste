@@ -195,6 +195,7 @@ class Ip(db.Model):
     ip_id = db.Column(db.Integer, primary_key=True)
     ip = db.Column(db.String(45), unique=True)
     hits = db.Column(db.Integer)
+    nonce = db.Column(db.String(16))
     blocked_date = db.Column(db.DateTime, nullable=True)
     blocked = Blocked()
 
