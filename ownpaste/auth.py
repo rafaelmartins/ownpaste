@@ -97,7 +97,7 @@ class HTTPDigestAuth(object):
             abort(401)
 
         # verify if the client returned the sended nonce
-        if ip.nonce is not None and ip.nonce != auth.nonce:
+        if ip.nonce is not None and ip.nonce.lower() != auth.nonce.lower():
             abort(400)
 
         # if user or password are wrong
