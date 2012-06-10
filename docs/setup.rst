@@ -85,7 +85,7 @@ you when deploying ownpaste.
 The following command will ask you for the desired password, and output the hash
 to be used in the configuration file::
 
-    $ ownpaste generatepw
+    $ ownpaste generatepw --config-file=/path/to/config-file.cfg
 
 
 Configuration parameters
@@ -108,6 +108,8 @@ configuration file is an usual python file, with the following variables:
 |                         |                              | pagination                       |
 +-------------------------+------------------------------+----------------------------------+
 | SQLALCHEMY_DATABASE_URI | 'sqlite:////tmp/ownpaste.db' | SQL-Alchemy database string      |
++-------------------------+------------------------------+----------------------------------+
+| REALM                   | 'ownpaste'                   | Realm for HTTP Digest auth.      |
 +-------------------------+------------------------------+----------------------------------+
 | USERNAME                | 'ownpaste'                   | Username                         |
 +-------------------------+------------------------------+----------------------------------+
