@@ -92,8 +92,9 @@ class Paste(db.Model):
         self.pub_date = datetime.utcnow()
 
         # fix file_name, we just want the basename
-        self.file_name = self.file_name.split('/')[-1]
-        self.file_name = self.file_name.split('\\')[-1]
+        if self.file_name is not None:
+            self.file_name = self.file_name.split('/')[-1]
+            self.file_name = self.file_name.split('\\')[-1]
 
         # guess language, if needed
         if self.language is None:
