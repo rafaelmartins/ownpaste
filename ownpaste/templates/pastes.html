@@ -6,6 +6,7 @@
 <h1>Pastes</h1>
 <table class="listing">
     <tr>
+        <th>ID</th>
         <th>File name</th>
         <th>Language</th>
         <th>Date</th>
@@ -13,9 +14,10 @@
         <th>Raw</th>
         <th>Download</th>
     </tr>
-    {% for paste in pagination.items %}
-    {% set paste_id = paste.private_id or paste.paste_id %}
+    {% for paste in pagination.items -%}
+    {% set paste_id = paste.private_id or paste.paste_id -%}
     <tr>
+        <td>{{ paste.paste_id }}</td>
         <td>{{ paste.file_name or '(no name)' }}</td>
         <td>{{ paste.language_name }}</td>
         <td>{{ paste.pub_date_localized.strftime('%d/%m/%Y %H:%M:%S') }}</td>
@@ -26,11 +28,11 @@
         <td><a href="{{ url_for('views.paste_api', paste_id=paste_id,
             action='download') }}">Download</a></td>
     </tr>
-    {% else %}
+    {%- else -%}
     <tr>
-        <td colspan="6">No paste available!</td>
+        <td colspan="7">No paste available!</td>
     </tr>
-    {% endfor %}
+    {%- endfor %}
 </table>
 <div class="pagination">
     {%- for page in pagination.iter_pages() %}

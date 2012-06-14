@@ -1,8 +1,6 @@
 {% extends "base.html" -%}
 
-{% block title -%}
-{{ file_name or '(no name)' }}
-{%- endblock %}
+{% block title %}ownpaste - {{ paste.file_name or '(no name)' }}{% endblock %}
 
 {% block pygments_css -%}
 <link type="text/css" rel="stylesheet" href="{{
@@ -10,5 +8,16 @@
 {%- endblock %}
 
 {% block body -%}
-{{ paste }}
+{% set paste_id = paste.private_id or paste.paste_id -%}
+{{ paste.file_content_highlighted }}
+<p>
+    <b>ID:</b> {{ paste_id }} -
+    <b>File name:</b> {{ paste.file_name }} -
+    <b>Language:</b> {{ paste.language_name }} -
+    <b>Date:</b> {{ paste.pub_date_localized.strftime('%d/%m/%Y %H:%M:%S') }} -
+    <b><a href="{{ url_for('views.paste_api', paste_id=paste_id,
+        action='raw') }}">Raw</a></b> -
+    <b><a href="{{ url_for('views.paste_api', paste_id=paste_id,
+        action='download') }}">Download</a></b>
+</p>
 {%- endblock %}

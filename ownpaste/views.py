@@ -95,8 +95,7 @@ class PasteAPI(MethodView):
                     return jsonify(paste.to_json())
 
                 # html output
-                return render_template('paste.html', file_name=paste.file_name,
-                                       paste=paste.file_content_highlighted)
+                return render_template('paste.html', paste=paste)
 
             # browser goodies
 
