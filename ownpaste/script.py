@@ -12,7 +12,6 @@
 from flask import current_app
 from flask.ext.script import Command, Option, prompt_pass
 from migrate.versioning import api as migrate_api
-from werkzeug.security import generate_password_hash
 from ownpaste.auth import HTTPDigestAuth
 from ownpaste.migrations import __file__ as migrations_init
 

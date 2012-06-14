@@ -12,7 +12,6 @@
 from datetime import datetime, timedelta
 from flask import abort, current_app, make_response, request
 from hashlib import md5
-from werkzeug.exceptions import default_exceptions
 from ownpaste.models import Ip, db
 from ownpaste.utils import jsonify, request_wants_json
 
@@ -43,7 +42,8 @@ class HTTPDigestAuth(object):
     def challenge(self, error):
         ip = Ip.get(request.remote_addr)
         if request_wants_json():
-            response = jsonify(dict(status='fail', error='Authentication required'))
+            response = jsonify(dict(status='fail',
+                                    error='Authentication required'))
         else:
             response = make_response(error.get_body(request.environ))
 
