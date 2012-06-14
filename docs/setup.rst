@@ -173,5 +173,9 @@ documentation for instructions:
 
 http://flask.pocoo.org/docs/deploying/
 
-Also, make sure that you deploy ownpaste using HTTPS, to improve the security.
+Make sure that the ``REMOTE_ADDR`` and ``HTTP_AUTHORIZATION`` headers are being
+passed to the ownpaste application by your web server of choice.
+
+The IP-based blocker, to avoid brute-force attacks, will fail if ``REMOTE_ADDR``
+isn't correct.
 
