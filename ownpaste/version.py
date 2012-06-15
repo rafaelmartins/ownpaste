@@ -9,5 +9,5 @@
     :license: BSD, see LICENSE for more details.
 """
 
-version = '0.2'
+version = '0.2.1'
 api_version = '1'
