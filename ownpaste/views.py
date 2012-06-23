@@ -137,7 +137,7 @@ class PasteAPI(MethodView):
         language = data.get('language')
         private = data.get('private', False)
         if not isinstance(private, bool):
-            raise(400)
+            abort(400)
         try:
             file_content = data['file_content']
         except KeyError:
