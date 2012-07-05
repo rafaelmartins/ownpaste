@@ -116,7 +116,7 @@ class PasteAPI(MethodView):
                 response = make_response(paste.file_content)
                 response.headers['Content-Type'] = content_type
                 response.headers['Content-Disposition'] = \
-                    'attachment; filename=%s' % file_name
+                    'attachment; filename="%s"' % file_name
                 return response
 
             # no render found
