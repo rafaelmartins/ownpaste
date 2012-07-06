@@ -102,7 +102,8 @@ class PasteAPI(MethodView):
             # plain text output
             if action == 'raw':
                 response = make_response(paste.file_content)
-                response.headers['Content-type'] = 'text/plain; charset=utf-8'
+                response.headers['Content-Type'] = \
+                    'text/plain; charset="utf-8"'
                 return response
 
             # force download
