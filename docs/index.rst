@@ -2,7 +2,7 @@ ownpaste, a personal pastebin application
 =========================================
 
 :Author: Rafael Goncalves Martins
-:Source code: https://hg.rafaelmartins.eng.br/ownpaste/
+:Source code: http://hg.rafaelmartins.eng.br/ownpaste/
 :License: BSD
 :Version: |release|
 
