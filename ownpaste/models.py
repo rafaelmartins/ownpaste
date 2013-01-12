@@ -115,10 +115,8 @@ class Paste(db.Model):
             self.language = lexer.aliases[0]
 
     def set_file_content(self, fc):
-        if not isinstance(fc, unicode):
-            self.file_content = u'\n'.join(fc.decode('utf-8').splitlines())
-        else:
-            self.file_content = fc
+        self.file_content = isinstance(fc, unicode) and fc or \
+            fc.decode('utf-8')
 
     @staticmethod
     def get(paste_id):
