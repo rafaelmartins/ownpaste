@@ -5,7 +5,7 @@
 
     Module with ownpaste versions.
 
-    :copyright: (c) 2012 by Rafael Goncalves Martins
+    :copyright: (c) 2012-2013 by Rafael Goncalves Martins
     :license: BSD, see LICENSE for more details.
 """
 
