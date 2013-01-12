@@ -164,7 +164,8 @@ class Paste(db.Model):
     def file_content_highlighted(self):
         linenos = current_app.config['PYGMENTS_LINENOS']
         style = current_app.config['PYGMENTS_STYLE']
-        formatter = HtmlFormatter(linenos=linenos, style=style,
+        formatter = HtmlFormatter(linenos=linenos, anchorlinenos=linenos,
+                                  style=style, lineanchors='op',
                                   cssclass='syntax')
         return Markup('<div id="paste">%s</div>' % \
                       highlight(self.file_content, self.lexer, formatter))
