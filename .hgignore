@@ -1,8 +1,0 @@
-\.py[co]$
-\.wpu$
-
-^ownpaste.egg-info/
-^dist/
-^build/
-
-^docs/_build/[^(.keep)]

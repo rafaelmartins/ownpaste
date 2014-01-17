@@ -1,0 +1,11 @@
+*.pyc
+*.pyo
+
+/*.wpu
+
+/ownpaste.egg-info/
+/dist/
+/build/
+
+/docs/_build/
+!/docs/_build/.keep
