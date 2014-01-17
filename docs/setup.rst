@@ -29,7 +29,7 @@ Download the latest tarball from PyPI_, extract it and run::
 Using ``pip``/``easy_install``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To install blohg using ``pip``, type::
+To install ownpaste using ``pip``, type::
 
     # pip install ownpaste
 
@@ -51,10 +51,10 @@ There's a Gentoo_ ebuild available in the main tree. Install it using::
 Running ownpaste from the Mercurial repository
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can also run ownpaste from the Mercurial repository. Just clone it and make
+You can also run ownpaste from the Git repository. Just clone it and make
 sure that it is added to your Python path::
 
-    $ hg clone http://hg.rafaelmartins.eng.br/ownpaste/
+    $ git clone https://github.com/rafaelmartins/ownpaste.git
     $ cd ownpaste/
 
 The ``ownpaste`` script does not exists in the repository, but you can run it
