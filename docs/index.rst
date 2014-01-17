@@ -6,7 +6,7 @@ ownpaste, a personal pastebin application
 :License: BSD
 :Version: |release|
 
-.. include:: ../README
+.. include:: ../README.rst
    :start-line: 3
    :end-line: 21
 

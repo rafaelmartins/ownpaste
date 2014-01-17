@@ -13,7 +13,7 @@ sys.path.append(os.path.join(cwd, 'ownpaste'))
 from version import version as __version__
 
 long_description = ''
-with open(os.path.join(cwd, 'README')) as fp:
+with open(os.path.join(cwd, 'README.rst')) as fp:
     long_description = fp.read()
 
 setup(
