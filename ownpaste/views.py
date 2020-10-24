@@ -31,7 +31,7 @@ def home():
                             languages=LANGUAGES))
     return render_template('base.html', version=ownpaste.__version__,
                            api_version=ownpaste.api_version,
-                           languages=LANGUAGES.iteritems())
+                           languages=LANGUAGES.items())
 
 
 @views.route('/pygments.css')
@@ -191,7 +191,7 @@ class PasteAPI(MethodView):
                 abort(400)
             paste.private = private
         if file_content is not None:
-            if not isinstance(file_content, basestring):
+            if not isinstance(file_content, str):
                 abort(400)
             paste.set_file_content(file_content)
         db.session.commit()

@@ -10,7 +10,7 @@
 """
 
 from flask import current_app
-from flask.ext.script import Command, Option, prompt_pass
+from flask_script import Command, Option, prompt_pass
 from migrate.versioning import api as migrate_api
 from ownpaste.auth import HTTPDigestAuth
 from ownpaste.migrations import __file__ as migrations_init
@@ -28,11 +28,11 @@ class GeneratePw(Command):
         p1 = prompt_pass('Password')
         p2 = prompt_pass('Retype password')
         if p1 != p2:
-            print >> sys.stderr, 'Passwords didn\'t match.'
+            print('Passwords didn\'t match.', file=sys.stderr)
             return
-        print
-        print 'Add this to your configuration file:'
-        print 'PASSWORD = \'%s\'' % auth.a1(p1)
+        print()
+        print('Add this to your configuration file:')
+        print('PASSWORD = \'%s\'' % auth.a1(p1))
 
 
 class SingleLevelFilter(logging.Filter):
@@ -106,5 +106,5 @@ class DbVersion(MigrateBase):
 
     def run(self):
         self.init_logging()
-        print migrate_api.db_version(url=self.dburi,
-                                     repository=self.repository)
+        print(migrate_api.db_version(url=self.dburi,
+                                     repository=self.repository))

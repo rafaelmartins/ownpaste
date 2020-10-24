@@ -14,7 +14,7 @@ import warnings
 warnings.filterwarnings('ignore', r'module.*already imported', UserWarning)
 
 from flask import Flask, _request_ctx_stack
-from flask.ext.script import Manager
+from flask_script import Manager
 from werkzeug.exceptions import default_exceptions
 from ownpaste.auth import HTTPDigestAuth
 from ownpaste.script import GeneratePw, DbVersionControl, DbUpgrade, \
@@ -37,6 +37,7 @@ def create_app(config_file=None):
     app.config.setdefault('PER_PAGE', 20)
     app.config.setdefault('SQLALCHEMY_DATABASE_URI',
                           'sqlite:////tmp/ownpaste.db')
+    app.config.setdefault('SQLALCHEMY_TRACK_MODIFICATIONS', False)
     app.config.setdefault('REALM', 'ownpaste')
     app.config.setdefault('USERNAME', 'ownpaste')
     app.config.setdefault('PASSWORD', auth.a1('test', app.config['USERNAME'],
@@ -52,9 +53,9 @@ def create_app(config_file=None):
     # register default error handler
     # based on: http://flask.pocoo.org/snippets/15/
     for _exc in default_exceptions:
-        app.error_handler_spec[None][_exc] = error_handler
+        app.register_error_handler(_exc, error_handler)
     del _exc
-    app.error_handler_spec[None][401] = auth.challenge
+    app.register_error_handler(401, auth.challenge)
 
     app.register_blueprint(views)
 
@@ -84,9 +85,4 @@ def create_script():
 
 
 def main():
-    import sys
-    try:
-        create_script().run()
-    except Exception, e:
-        print >> sys.stderr, '%s: %s' % (e.__class__.__name__, e)
-        return -1
+    create_script().run()

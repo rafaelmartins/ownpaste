@@ -15,13 +15,14 @@ from hashlib import md5
 from ownpaste.models import Ip, db
 from ownpaste.utils import jsonify, request_wants_json
 
+import binascii
 import os
 
 
 class HTTPDigestAuth(object):
 
     def hash(self, *args):
-        return md5(u':'.join(map(unicode, args))).hexdigest()
+        return md5(':'.join(args).encode('utf-8')).hexdigest()
 
     def a1(self, password, username=None, realm=None):
         return self.hash(username or current_app.config['USERNAME'],
@@ -49,7 +50,7 @@ class HTTPDigestAuth(object):
 
         # create nonce. the client should return the request with the
         # authentication data and the same nonce
-        ip.nonce = os.urandom(8).encode('hex')
+        ip.nonce = str(binascii.hexlify(os.urandom(8)))
         db.session.commit()
 
         # set digest response

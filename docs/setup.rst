@@ -33,23 +33,9 @@ To install ownpaste using ``pip``, type::
 
     # pip install ownpaste
 
-Or using ``easy_install``, type::
 
-    # easy_install ownpaste
-
-
-Gentoo Linux
-~~~~~~~~~~~~
-
-There's a Gentoo_ ebuild available in the main tree. Install it using::
-
-    # emerge -av www-apps/ownpaste
-
-.. _Gentoo: http://www.gentoo.org/
-
-
-Running ownpaste from the Mercurial repository
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Running ownpaste from the Git repository
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can also run ownpaste from the Git repository. Just clone it and make
 sure that it is added to your Python path::
@@ -85,7 +71,7 @@ you when deploying ownpaste.
 The following command will ask you for the desired password, and output the hash
 to be used in the configuration file::
 
-    $ ownpaste generatepw --config-file=/path/to/config-file.cfg
+    $ ownpaste --config-file=/path/to/config-file.cfg generatepw
 
 
 Configuration parameters
@@ -137,8 +123,8 @@ database system supported by SQL-Alchemy.
 
 The ``ownpaste`` script provides a command to initialize the database::
 
-    $ ownpaste db_version_control --config-file=/path/to/config-file.cfg
-    $ ownpaste db_upgrade --config-file=/path/to/config-file.cfg
+    $ ownpaste --config-file=/path/to/config-file.cfg db_version_control
+    $ ownpaste --config-file=/path/to/config-file.cfg db_upgrade
 
 
 Running ownpaste
@@ -149,7 +135,7 @@ server can't handle a big request load, then please don't use it in production.
 
 ::
 
-    $ ownpaste runserver --config-file=/path/to/config-file.cfg
+    $ ownpaste --config-file=/path/to/config-file.cfg runserver
 
 You can also setup the configuration file path using the environment
 variable ``OWNPASTE_SETTINGS``. This variable should contains a string

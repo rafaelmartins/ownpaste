@@ -11,7 +11,7 @@
 
 from datetime import datetime
 from flask import current_app
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 from jinja2 import Markup
 from fnmatch import fnmatch
 from pygments import highlight
@@ -115,12 +115,11 @@ class Paste(db.Model):
             self.language = lexer.aliases[0]
 
     def set_file_content(self, fc):
-        self.file_content = isinstance(fc, unicode) and fc or \
-            fc.decode('utf-8')
+        self.file_content = fc
 
     @staticmethod
     def get(paste_id):
-        if isinstance(paste_id, basestring) and not paste_id.isdigit():
+        if isinstance(paste_id, str) and not paste_id.isdigit():
             return Paste.query.filter(
                 Paste.private_id == paste_id).first_or_404()
         return Paste.query.filter(
