@@ -50,7 +50,7 @@ class HTTPDigestAuth(object):
 
         # create nonce. the client should return the request with the
         # authentication data and the same nonce
-        ip.nonce = str(binascii.hexlify(os.urandom(8)))
+        ip.nonce = binascii.hexlify(os.urandom(8)).decode('utf-8')
         db.session.commit()
 
         # set digest response
